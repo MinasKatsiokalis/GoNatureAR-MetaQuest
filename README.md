@@ -3,7 +3,7 @@
 
 Repo for Hololens2 port:  [GoNatureAR - Hololens2](https://github.com/MinasKatsiokalis/GoNatureAR)
 
-Main means of interaction: voice, hands
+Main means of interaction: voice, hands, controllers
 
 Stack:
 - Unity 2020.3
