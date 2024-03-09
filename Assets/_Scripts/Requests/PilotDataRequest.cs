@@ -5,7 +5,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System;
-using System.Security.Policy;
 using System.Linq;
 
 namespace GoNatureAR.Requests

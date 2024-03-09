@@ -182,6 +182,9 @@ PlayerSettings:
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
+  - {fileID: 6251554469435913725, guid: c56bfdcf5c850a246a31dfc330710d10, type: 2}
+  - {fileID: -6058551152721395571, guid: 253ed06b0d48f2e4793c1afb7ae72f5f, type: 2}
+  - {fileID: 11400000, guid: df272d4e79a849b43882cbcab0e7d681, type: 2}
   metroInputSource: 0
   wsaTransparentSwapchain: 0
   m_HolographicPauseOnTrackingLoss: 0
@@ -824,6 +827,7 @@ PlayerSettings:
   assemblyVersionValidation: 1
   gcWBarrierValidation: 0
   apiCompatibilityLevelPerPlatform:
+    Android: 3
     Standalone: 3
     WSA: 6
     Windows Store Apps: 3

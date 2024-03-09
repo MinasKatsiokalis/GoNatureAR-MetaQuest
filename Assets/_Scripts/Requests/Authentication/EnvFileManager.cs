@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System.IO;
+using UnityEngine.Networking;
 
 public class EnvFileManager : MonoBehaviour
 {
@@ -11,6 +12,7 @@ public class EnvFileManager : MonoBehaviour
 
     private string envFilePath = Path.Combine(Application.streamingAssetsPath, "file.env");
 
+
     private void Awake()
     {
         if (Instance == null)
@@ -18,14 +20,37 @@ public class EnvFileManager : MonoBehaviour
         else
             Destroy(this.gameObject);
 
-        envVariables = ReadEnvFile(envFilePath);
+        StartCoroutine(LoadEnvFile());
     }
 
+    private IEnumerator LoadEnvFile()
+    {
+#if !UNITY_ANDROID
+        string[] lines = File.ReadAllLines(envFilePath);
+        if (lines.Length == 0)
+        {
+            Debug.LogError("Failed to load file.env");
+            yield break;
+        }
+        envVariables = ReadEnvFile(lines);
+#elif UNITY_ANDROID
+        UnityWebRequest request = UnityWebRequest.Get(envFilePath);
+        yield return request.SendWebRequest();
 
-    private Dictionary<string, string> ReadEnvFile(string path)
+        if (request.result != UnityWebRequest.Result.Success)
+        {
+            Debug.LogError("Failed to load file.env");
+            yield break;
+        }
+        string text = request.downloadHandler.text;
+        string[] lines = text.Split('\n');
+        envVariables = ReadEnvFile(lines);
+#endif
+    }
+
+    private Dictionary<string, string> ReadEnvFile(string[] lines)
     {
         Dictionary<string, string> env = new Dictionary<string, string>();
-        string[] lines = File.ReadAllLines(path);
 
         foreach (string line in lines)
         {

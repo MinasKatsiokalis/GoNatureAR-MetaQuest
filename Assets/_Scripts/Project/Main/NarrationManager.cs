@@ -7,6 +7,7 @@ using System.Timers;
 using Timer = System.Timers.Timer;
 using static GoNatureAR.SpeechProfile;
 using Oculus.Voice;
+using System.Collections;
 
 namespace GoNatureAR
 {
@@ -83,14 +84,19 @@ namespace GoNatureAR
 
         private void Start()
         {
-            /*
-            speechInputHandler = GetComponent<SpeechInputHandler>();
-            speechInputHandler.AddResponse(GetKeywordToString(Keyword.Julie), JulieCalled);
-            speechInputHandler.AddResponse(GetKeywordToString(Keyword.Continue), () => GetDialogue(Keyword.Continue));
-            speechInputHandler.AddResponse(GetKeywordToString(Keyword.Yes), () => GetDialogue(Keyword.Yes));
-            speechInputHandler.AddResponse(GetKeywordToString(Keyword.LetsGo), () => GetDialogue(Keyword.LetsGo));
-            speechInputHandler.AddResponse("Restart", () => OnReset?.Invoke());
-            */
+            StartCoroutine(AppVoiceService());
+        }
+
+        private IEnumerator AppVoiceService()
+        {   
+            while (Instance.enabled)
+            {
+                if (appVoiceExperience.Active)
+                    yield return null;
+
+                appVoiceExperience.Activate();
+                yield return new WaitForSeconds(2);
+            }
         }
 
         #region META QUEST RESPONSES
@@ -143,11 +149,12 @@ namespace GoNatureAR
             }
         }
 
-
+        /// <summary>
+        /// Get dialogue from the sequence based on keyword and state
+        /// </summary>
+        /// <param name="keyword"></param>
         private async void GetDialogue(Keyword keyword)
         {
-            appVoiceExperience.Deactivate();
-
             //Before talk
             if (keyword == Keyword.Yes && (currentDialogueKey.State == State.Temperature ||
                                           currentDialogueKey.State == State.Noise ||
@@ -188,8 +195,6 @@ namespace GoNatureAR
             Debug.Log(currentDialogueKey.State + " " + currentDialogueKey.Keyword );
             OnDialogueTrigger?.Invoke(_narrationSequence.GetDialogueByKey(currentDialogueKey));
 
-            appVoiceExperience.Activate();
-
             //After talk
             if (currentDialogueKey.State == State.Introduction && currentDialogueKey.Keyword == Keyword.Continue)
             {
@@ -214,19 +219,22 @@ namespace GoNatureAR
             }
 
         }
+        
+        /// <summary>
+        /// Dialogue specific to Julie
+        /// </summary>
         public void JulieCalled()
         {   
             Debug.Log("Julie called");
             OnDialogueTrigger?.Invoke(_narrationSequence.GetDialogueByKey(new DialogueKey(State.Introduction, Keyword.Julie)));
-
-            appVoiceExperience.Activate();
         }
 
+        /// <summary>
+        /// Dialogue specific when palm is not up
+        /// </summary>
         public void GetPalmNotUpDialogue()
         {
             OnDialogueTrigger?.Invoke(_narrationSequence.GetDialogueByKey(new DialogueKey(State.Introduction, Keyword.Palm)));
-
-            appVoiceExperience.Activate();
         }
 
         #region AIR QUALITY
