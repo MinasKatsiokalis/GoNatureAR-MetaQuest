@@ -7,7 +7,7 @@ Main means of interaction: voice, hands, controllers
 
 Stack:
 - Unity 2020.3
-- MRTK 2.8.3 (OpenXR 18.3)
+- MRTK 2.8.3
 - Oculus Integration 39.0
 - Passthrough API
 - Meta Voice SDK
